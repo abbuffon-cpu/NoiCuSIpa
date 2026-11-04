@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Archivio cedolini</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1d5c63"><link rel="apple-touch-icon" href="icon-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Cedolini">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<script src="lib/pdf.min.js" onload="window.LOCAL=1"></script>
+<script>window.pdfjsLib||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>')</script>
+<style>
+:root{--bg:#eef1f4;--pn:#fff;--ink:#1c2733;--mut:#667585;--ln:#d5dce3;--acc:#1d5c63;--pos:#dff3e4;--neg:#f6dcdc;--wn:#fff0c9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181d;--pn:#1a2229;--ink:#e5ebf0;--mut:#92a1ae;--ln:#2c3842;--acc:#6cc0c8;--pos:#1e3a29;--neg:#442426;--wn:#4a3c14}}
+:root[data-theme="dark"]{--bg:#12181d;--pn:#1a2229;--ink:#e5ebf0;--mut:#92a1ae;--ln:#2c3842;--acc:#6cc0c8;--pos:#1e3a29;--neg:#442426;--wn:#4a3c14}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 'IBM Plex Sans',system-ui,sans-serif;font-variant-numeric:tabular-nums}
+header{padding:18px 16px 0;max-width:1100px;margin:auto}h1{font-size:22px;margin:0 0 4px}p.s{margin:0 0 12px;color:var(--mut)}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--ln);overflow-x:auto}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;color:var(--mut);cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--ink);border-color:var(--acc);font-weight:600}
+main{max-width:1100px;margin:auto;padding:16px}
+.box{background:var(--pn);border:1px solid var(--ln);border-radius:6px;padding:14px;margin-bottom:14px}
+.drop{border:2px dashed var(--acc);text-align:center;padding:28px 14px;cursor:pointer}
+button.b,label.b{background:var(--acc);color:var(--bg);border:0;border-radius:4px;padding:8px 14px;font:inherit;cursor:pointer;display:inline-block}
+button.g{background:none;border:1px solid var(--ln);color:var(--ink);border-radius:4px;padding:4px 10px;font:inherit;cursor:pointer}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid var(--ln);flex-wrap:wrap}.row:first-child{border:0}
+.ok{color:#2e7d4f}.ko{background:var(--wn);padding:1px 6px;border-radius:3px}
+.mx{overflow-x:auto;max-height:70vh;border:1px solid var(--ln);border-radius:6px;background:var(--pn)}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:4px 8px;border-bottom:1px solid var(--ln);white-space:nowrap;text-align:right}
+th{position:sticky;top:0;background:var(--pn);z-index:2}.c1,.c2{position:sticky;background:var(--pn);text-align:left!important;z-index:1}th.c1,th.c2{z-index:3}.c1{left:0;min-width:96px;max-width:96px}.c2{left:96px;max-width:240px;overflow:hidden;text-overflow:ellipsis}@media(max-width:700px){.c2{position:static}}
+td[data-note]{position:relative;cursor:pointer}td[data-note]::after{content:"";position:absolute;top:0;right:0;border:4px solid transparent;border-top-color:#c0392b;border-right-color:#c0392b}
+#tip{position:fixed;z-index:9;background:var(--ink);color:var(--bg);padding:6px 10px;border-radius:4px;font-size:13px;max-width:220px}[hidden]{display:none!important}button.mv{padding:0 5px;margin-right:2px;font-size:11px}tr[draggable=true]{cursor:grab}
+td.p{background:var(--pos)}td.n{background:var(--neg)}tr.h td{background:var(--bg);font-weight:600;text-align:left}tr.t td{font-weight:600}
+input[type=search],textarea{width:100%;padding:8px;border:1px solid var(--ln);border-radius:4px;background:var(--pn);color:var(--ink);font:inherit;margin-bottom:10px}
+textarea{height:110px;font-size:12px}.mut{color:var(--mut)}
+.gr td,.gr th{text-align:left;vertical-align:top}.cl{display:flex;align-items:center;gap:6px;margin:3px 0}.am{min-width:72px;text-align:right}
+:root{--o:#1d5c63;--p:#d08c2e;--u:#5b6fc7}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--o:#6cc0c8;--p:#e6b25a;--u:#93a3ee}}:root[data-theme="dark"]{--o:#6cc0c8;--p:#e6b25a;--u:#93a3ee}
+.bd{display:inline-block;min-width:22px;margin:0 2px;padding:1px 4px;border-radius:3px;border:1px solid var(--ln);color:var(--mut);font-size:12px;text-align:center}
+.bd.on{background:var(--acc);border-color:var(--acc);color:var(--bg)}.bd.miss{border-color:#c0392b;color:#c0392b;font-weight:600}.bd.bad{background:var(--wn);color:var(--ink);border-color:var(--wn)}
+td[data-r]{position:relative;cursor:pointer}td.mn::before{content:"";position:absolute;top:0;left:0;border:4px solid transparent;border-top-color:#2c6fbb;border-left-color:#2c6fbb}
+#tip{background:var(--pn);color:var(--ink);border:1px solid var(--ln);box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:250px;padding:10px}#tip textarea{height:70px;margin:6px 0}
+select.g{background:var(--pn)}
+#ts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:4px;z-index:40}
+#pv{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto;padding:0 8px env(safe-area-inset-bottom,0px)}#pv .ph{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:calc(8px + env(safe-area-inset-top,0px)) 4px 8px;background:var(--bg);z-index:2}#pb canvas{display:block;margin:0 auto 10px;border:1px solid var(--ln);background:#fff}
+.lt{display:inline-flex;flex-direction:column;align-items:center;margin:0 4px}button.bd{background:var(--pn);cursor:pointer;font:inherit;font-size:13px;padding:2px 8px}.lt .x{border:0;background:none;color:var(--mut);font:inherit;font-size:11px;padding:0 4px;cursor:pointer}.lt .x.b{color:var(--bg);border-radius:3px}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}.kp>div{background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:10px 12px}.kp small{color:var(--mut);display:block;font-size:12px}.kp strong{display:block;font-size:21px}.rd{color:#c0392b}
+.ch{display:flex;gap:8px;margin-bottom:12px}button.g.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}.bt{min-width:44px;min-height:44px}
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px}.tl{border-radius:8px;padding:8px 10px;border:1px solid var(--ln);background:var(--pn)}.tl.ok{background:var(--pos)}.tl.mi{background:var(--neg)}.tl.fu{opacity:.7}.tl .am{font-size:13px;margin:2px 0 6px;text-align:left;min-width:0}
+.mnb{background:none;border:0;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;padding:0}.mnb[disabled]{color:var(--mut);cursor:default}
+.sg{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:14px;max-width:420px;border:1px solid var(--ln)}.sg button{flex:1;border:0;background:none;color:var(--mut);padding:10px;border-radius:8px;font:inherit;cursor:pointer}.sg .on{background:var(--pn);color:var(--ink);font-weight:600}
+.st{display:flex;align-items:center;gap:8px;margin-bottom:10px;max-width:420px}.st span{flex:1;text-align:center;font-weight:600;font-size:17px}
+.big{font-size:32px;font-weight:600}.dc{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;background:var(--bg);color:var(--mut)}.dc.up{background:var(--pos);color:var(--ink)}.dc.dn{background:var(--neg);color:var(--ink)}.dc.new{background:var(--wn);color:var(--ink)}
+.sc{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:16px 0 4px;font-weight:600}.v{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--ln);cursor:pointer;max-width:620px}.v>div{flex:1}.v small{display:block;color:var(--mut);font-size:12px}
+[data-h]{cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+</style></head><body>
+<header><h1>Archivio cedolini</h1><p class="s">I PDF restano nel tuo browser: nulla viene inviato a server.</p>
+<nav id="nav"></nav></header><main id="m"></main><div id="tip" hidden></div>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc=window.LOCAL?'lib/pdf.worker.min.js':'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const MS=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+const MESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+const AM=/-?\d{1,3}(?:\.\d{3})*,\d\d/g,AMT=/^-?\d{1,3}(?:\.\d{3})*,\d\d$/,CODE=/^(?:[A-Z]{1,2}\d{2,4}(?:\/[A-Z0-9]+)?|\d{3}\/[A-Z0-9]+)$/;
+const num=s=>parseFloat(s.replace(/\./g,'').replace(',','.')),fmt=n=>n==null?'':n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const lab=m=>MESI[+m.slice(5)-1]+' '+m.slice(0,4);
+let C=[],tab='up',log=[],q='',ORD=[],rmode=false,NOTES={},yr='',ay='',xv=innerWidth<700?'mese':'tab',sm='',ca='',cb='',cd=true,ALIAS={};
+/* storage (IndexedDB, private al browser) */
+const dbp=new Promise((res,rej)=>{try{const r=indexedDB.open('cedolini',1);r.onupgradeneeded=()=>{r.result.createObjectStore('ced',{keyPath:'id'});r.result.createObjectStore('pdf')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}});
+const tx=async(s,m,f)=>{try{const d=await dbp;return await new Promise((res,rej)=>{const t=d.transaction(s,m);const r=f(t.objectStore(s));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error)})}catch(e){console.warn(e)}};
+/* estrazione testo con coordinate */
+async function extract(buf){const pdf=await pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0))}).promise,pages=[];
+for(let p=1;p<=pdf.numPages;p++){const pg=await pdf.getPage(p),pw=pg.getViewport({scale:1}).width,tc=await pg.getTextContent();
+const it=tc.items.filter(i=>i.str.trim()).map(i=>({s:i.str.trim(),x:i.transform[4],y:i.transform[5],w:i.width,pw}));
+it.sort((a,b)=>b.y-a.y||a.x-b.x);const ls=[];
+for(const i of it){const l=ls[ls.length-1];if(l&&Math.abs(l.y-i.y)<=2.5)l.it.push(i);else ls.push({y:i.y,it:[i]})}
+ls.forEach(l=>{l.it.sort((a,b)=>a.x-b.x);l.t=l.it.map(i=>i.s).join(' ')});pages.push(ls)}return pages}
+function norm(v){if(v.note)return v;const m=v.desc.match(/^(.*?)(?:\s+-\s+((?:Qta|Gg|Giorni|Imp|Rif|Dal)\b.*)|\s+(scad\.?.*))$/i);
+if(m){v.desc=m[1];v.note=(m[2]||m[3]).replace(/\s+/g,' ').trim()}
+else{const f=v.desc.match(/^(COMPENSO FORFETTARIO DI IMPIEGO)\s*[-:]?\s*(.+)$/i);
+if(f){v.desc=f[1].toUpperCase();v.note=f[2].replace(/\s+/g,' ').trim()}
+else if(/^AA/.test(v.cod||'')&&v.desc.includes(' - ')){const i=v.desc.indexOf(' - ');v.note=v.desc.slice(i+3).trim();v.desc=v.desc.slice(0,i)}else v.note=''}
+return v}
+function parse(pages){const all=pages.flat(),txt=all.map(l=>l.t).join('\n'),voci=[];let id,mese,tipo,netto;
+if(/Cedolino Militare/i.test(txt)){
+const m=txt.match(new RegExp('('+MESI.join('|')+')\\s+(20\\d\\d)','i'));mese=m[2]+'-'+String(MESI.indexOf(m[1].toLowerCase())+1).padStart(2,'0');tipo='CUSI';const gp=txt.match(/TITOLO PAGAMENTO:\s*(\S+)/);id='CUSI-'+mese+'-'+(gp?gp[1]:'1');
+for(const pg of pages){let tb=false;for(const l of pg){const t=l.t;
+if(/DENOMINAZIONE VOCE/i.test(t)){tb=true;continue}
+if(/^(IMPONIBILE|TOTALI)/i.test(t)){tb=false;continue}
+const am=l.it.filter(i=>AMT.test(i.s)).map(i=>({v:num(i.s),r:(i.x+i.w)/i.pw}));
+if(/^IRPEF/i.test(t)&&am.length){voci.push({cod:'IRPEF',desc:t.slice(0,t.search(AM)).trim(),sec:'Ritenute',imp:-am[am.length-1].v});continue}
+if(/TOTALE NETTO A PAGARE/i.test(t)&&am.length){netto=am[am.length-1].v;continue}
+if(!tb||!am.length)continue;
+const L=r=>r<.62,P=r=>r>=.62&&r<.79,V=r=>r>=.79&&r<.9,N=r=>r>=.9,col=f=>am.filter(a=>f(a.r)).reduce((x,a)=>x+a.v,0);
+const imp=(am.some(a=>N(a.r))?col(N):col(L)-col(P))-col(V);
+voci.push({cod:'',desc:l.it.filter(i=>i.x/i.pw>=.15&&!AMT.test(i.s)&&!/^=+[A-Z=]*$/.test(i.s)).map(i=>i.s).join(' '),note:l.it.filter(i=>i.x/i.pw<.15&&!AMT.test(i.s)).map(i=>i.s).join(' '),sec:'Competenze',imp:+imp.toFixed(2)})}}}
+else{const r=txt.match(/RATA:\s*(\S+)\s+(\d{4})(?:\s*-\s*(.*?))?\s*ID CEDOLINO:\s*(\w+)/);if(!r)throw Error('Formato non riconosciuto');
+mese=r[2]+'-'+String(MESI.indexOf(r[1].toLowerCase())+1).padStart(2,'0');tipo=r[3]?'Pagamenti vari':'Ordinario';id=r[4];
+netto=num(txt.match(/Totale netto:\s*(\d[\d.]*,\d\d)/)[1]);
+for(const pg of pages){if(!pg.some(l=>/DATI DI DETTAGLIO/.test(l.t)))continue;let sec='',cur=null;
+for(const l of pg){const h=l.t.match(/^(Competenze fisse|Competenze accessorie|Ritenute|Conguagli fiscali e previdenziali)$/i);if(h){sec=h[1];cur=null;continue}
+const a=l.it.filter(i=>AMT.test(i.s)&&(i.x+i.w)/i.pw>.8),last=a[a.length-1];
+const val=i=>{const v=num(i.s);return (i.x+i.w)/i.pw>.91?v:-v};
+const t=l.t.match(/^Totale ritenute (previdenziali|fiscali al netto delle detrazioni)/);
+if(t&&last){voci.push({cod:t[1][0]=='p'?'PREV':'FISC',desc:'Totale ritenute '+t[1],sec:'Ritenute',imp:val(last)});continue}
+const f=l.it[0];
+if(f.x/f.pw<.12&&CODE.test(f.s)){cur={cod:f.s,desc:l.it.slice(1).filter(i=>!(AMT.test(i.s)&&(i.x+i.w)/i.pw>.8)).map(i=>i.s).join(' '),sec,imp:null};voci.push(cur);if(last)cur.imp=val(last)}
+else if(cur){const tt=l.it.filter(i=>!(AMT.test(i.s)&&(i.x+i.w)/i.pw>.8)).map(i=>i.s).join(' ');if(/^(scad\.?|\d{2}\/\d{4}|Qta\.|Gg\b|Giorni|Rif\.|Imp\.|Dal\b)/i.test(tt))cur.desc+=' '+tt;if(cur.imp==null&&last)cur.imp=val(last)}}}}
+const v=voci.filter(x=>x.imp!=null).map(norm),sum=v.reduce((s,x)=>s+x.imp,0);
+return{id,mese,tipo,netto,voci:v,ok:Math.abs(sum-netto)<.015,diff:+(sum-netto).toFixed(2)}}
+async function addFiles(fs){for(const f of fs){try{const buf=await f.arrayBuffer(),c=parse(await extract(buf));c.fn=f.name;
+await tx('pdf','readwrite',s=>s.put(buf,c.id));await tx('ced','readwrite',s=>s.put(c));
+const dup=C.some(x=>x.id===c.id);C=C.filter(x=>x.id!==c.id);C.push(c);log.unshift({ok:c.ok,t:`${f.name}: ${dup?'già presente, aggiornato — ':''}${c.tipo} ${lab(c.mese)}, ${c.voci.length} voci, netto ${fmt(c.netto)}`+(c.ok?'':` — la somma delle voci non quadra (diff. ${fmt(c.diff)})`)})}
+catch(e){log.unshift({ok:false,t:`${f.name}: non letto (${e.message})`})}}draw()}
+const sorted=()=>[...C].sort((a,b)=>a.mese.localeCompare(b.mese)||a.tipo.localeCompare(b.tipo));
+/* viste */
+function vUp(){return`<div class="box drop" id="dz"><p><b>Trascina qui i PDF</b> dei cedolini (anche più di uno)</p><label class="b">Scegli file<input id="fi" type="file" accept="application/pdf" multiple hidden></label></div>
+<div class="box">${log.length?log.map(l=>`<div class="row"><span class="${l.ok?'ok':'ko'}">${l.t}</span></div>`).join(''):'<span class="mut">Ordinari, pagamenti vari e cedolini CUSI vengono riconosciuti da soli.</span>'}</div>`}
+const toast=t=>{let e=document.getElementById('ts');if(!e){e=document.createElement('div');e.id='ts';document.body.appendChild(e)}e.textContent=t;e.hidden=false;clearTimeout(e.t);e.t=setTimeout(()=>{e.hidden=true},4000)};
+async function openPdf(id){const buf=await tx('pdf','readonly',s=>s.get(id));if(!buf)return toast('PDF non archiviato');
+let ov=document.getElementById('pv');if(ov)ov.remove();ov=document.createElement('div');ov.id='pv';const c=C.find(x=>x.id===id);
+ov.innerHTML=`<div class="ph"><b>${esc(c?lab(c.mese)+' - '+c.tipo:'PDF')}</b><button class="b" id="pc">Chiudi</button></div><div id="pb" class="mut">Caricamento...</div>`;document.body.appendChild(ov);
+try{const pdf=await pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0))}).promise,pb=document.getElementById('pb');pb.textContent='';
+for(let p=1;p<=pdf.numPages;p++){const pg=await pdf.getPage(p),w=Math.min(ov.clientWidth-16,900),sc=w/pg.getViewport({scale:1}).width,dr=window.devicePixelRatio||1,v=pg.getViewport({scale:sc*dr}),cv=document.createElement('canvas');cv.width=v.width;cv.height=v.height;cv.style.width=w+'px';cv.style.height=(v.height/dr)+'px';pb.appendChild(cv);await pg.render({canvasContext:cv.getContext('2d'),viewport:v}).promise}}catch(e){toast('PDF non leggibile')}}
+const b64=buf=>{let t='';const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=8192)t+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(t)};
+const unb64=t=>{const x=atob(t),u=new Uint8Array(x.length);for(let i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u.buffer};
+async function saveSync(){const d={v:1,c:C,notes:NOTES,ord:ORD,alias:ALIAS};if(document.getElementById('wp').checked){d.pdf={};for(const c of C){const b=await tx('pdf','readonly',s=>s.get(c.id));if(b)d.pdf[c.id]=b64(b)}}
+const fn='cedolini-sync-'+new Date().toISOString().slice(0,10)+'.json',f=new File([JSON.stringify(d)],fn,{type:'application/json'});
+try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e&&e.name==='AbortError')return}
+const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);toast('File scaricato')}
+async function importSync(f){if(!f)return;try{const d=JSON.parse(await f.text()),a=Array.isArray(d)?d:d.c;let n=0;
+for(const c of a){c.voci.forEach(norm);await tx('ced','readwrite',s=>s.put(c));C=C.filter(x=>x.id!==c.id);C.push(c);n++;if(d.pdf&&d.pdf[c.id])await tx('pdf','readwrite',s=>s.put(unb64(d.pdf[c.id]),c.id))}
+if(d.notes){NOTES={...NOTES,...d.notes};await tx('pdf','readwrite',s=>s.put(NOTES,'__notes'))}
+if(d.alias){ALIAS={...ALIAS,...d.alias};await tx('pdf','readwrite',s=>s.put(ALIAS,'__alias'))}if(d.ord){ORD=[...new Set([...d.ord,...ORD])];await tx('pdf','readwrite',s=>s.put(ORD,'__order'))}
+log=[{ok:true,t:`Importati ${n} cedolini dal file`}];tab='up';draw()}catch(e){toast('File non valido')}}
+async function reparse(){document.getElementById('ra').textContent='Elaboro...';let ok=0,no=0;const chg=[];
+for(const c of [...C]){const buf=await tx('pdf','readonly',s=>s.get(c.id));if(!buf){no++;continue}
+try{const n=parse(await extract(buf));n.fn=c.fn;if(n.voci.length!==c.voci.length||n.netto!==c.netto)chg.push(`${lab(n.mese)} ${n.tipo}: ${c.voci.length} → ${n.voci.length} voci`);
+if(n.id!==c.id){await tx('ced','readwrite',s=>s.delete(c.id));await tx('pdf','readwrite',s=>s.delete(c.id))}
+await tx('pdf','readwrite',s=>s.put(buf,n.id));await tx('ced','readwrite',s=>s.put(n));C=C.filter(x=>x.id!==c.id);C.push(n);ok++}catch(e){no++}}
+log=[{ok:!no,t:`Rielaborati ${ok} cedolini`+(no?`, ${no} non rielaborabili (PDF mancante o illeggibile)`:'')+(chg.length?'. Cambiati: '+chg.join('; '):'. Nessuna differenza.')}];tab='up';draw()}
+const nm=m=>C.filter(c=>c.mese===m&&c.tipo!=='CUSI').reduce((x,c)=>x+c.netto,0),months=()=>[...new Set(C.map(c=>c.mese))].sort();
+function vArc(){if(!C.length)return'<div class="box mut">Nessun cedolino archiviato. Caricali dalla scheda Carica.</div>';
+const now=new Date(),cm=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0'),all=months(),first=all[0],ys=[];for(let y=+first.slice(0,4);y<=Math.max(+all[all.length-1].slice(0,4),now.getFullYear());y++)ys.push(String(y));
+if(!ys.includes(ay))ay=all[all.length-1].slice(0,4);
+const ord=all.filter(m=>C.some(c=>c.mese===m&&c.tipo==='Ordinario')),l12=ord.slice(-12),miss=[];
+for(let y=+first.slice(0,4);y<=now.getFullYear();y++)for(let i=1;i<=12;i++){const m=y+'-'+String(i).padStart(2,'0');if(m>=first&&m<=cm&&!ord.includes(m))miss.push(m)}
+const lt=(m,t,l,mi)=>{const y=C.filter(c=>c.mese===m&&c.tipo===t);if(!y.length)return`<span class="lt"><span class="bd ${t==='Ordinario'&&mi?'miss':''}" title="${t} - mancante">${l}</span></span>`;
+return y.map(c=>`<span class="lt"><button class="bd ${c.ok?'on':'bad'}" data-o="${esc(c.id)}" title="${t}: ${fmt(c.netto)} €${c.ok?'':' - da verificare (differenza '+fmt(c.diff)+')'}">${l}</button><button class="x" data-d="${esc(c.id)}" title="Elimina questo cedolino">✕</button></span>`).join('')};
+const tile=i=>{const m=ay+'-'+String(i+1).padStart(2,'0'),x=C.some(c=>c.mese===m),mi=m>=first&&m<=cm&&!ord.includes(m);
+return`<div class="tl ${m>cm?'fu':mi?'mi':x?'ok':'fu'}"><button class="mnb" data-gm="${m}"${x?'':' disabled'}>${MS[i]}</button><div class="am">${x?fmt(nm(m)):mi?'manca ordinario':'–'}</div><div>${lt(m,'Ordinario','O',mi)}${lt(m,'Pagamenti vari','P',mi)}${lt(m,'CUSI','C',mi)}</div></div>`};
+return`<div class="kp"><div><small>Ultimo netto${ord.length?' · '+lab(ord[ord.length-1]):''}</small><strong>${ord.length?fmt(nm(ord[ord.length-1])):'–'} €</strong></div><div><small>Media ultimi ${l12.length} mesi</small><strong>${l12.length?fmt(l12.reduce((x,m)=>x+nm(m),0)/l12.length):'–'} €</strong></div><div><small>Totale ${ay}</small><strong>${fmt(all.filter(m=>m.startsWith(ay)).reduce((x,m)=>x+nm(m),0))} €</strong></div><div><small>Ordinari mancanti</small><strong class="${miss.length?'rd':''}">${miss.length}</strong><small>${miss.slice(-3).map(m=>MS[+m.slice(5)-1]+' '+m.slice(2,4)).join(', ')}${miss.length>3?'…':''}</small></div></div>
+<div class="ch">${ys.map(y=>`<button class="g bt${y===ay?' on':''}" data-ay="${y}">${y}</button>`).join('')}</div><div class="tg">${MS.map((_,i)=>tile(i)).join('')}</div>
+<p class="mut">O ordinario, P pagamenti vari, C CUSI. Il netto del mese somma ordinario e pagamenti vari. Passa sopra una lettera per l'importo, cliccala per aprire il PDF, ✕ per eliminare; tocca il mese per il dettaglio. Rosso: ordinario mancante; giallo: da verificare.</p>`}
+const TIPI=['Ordinario','Pagamenti vari','CUSI'],SEC=['competenze fisse','competenze accessorie','ritenute','conguagli fiscali e previdenziali'];
+const vk=(c,v)=>{let k=c.tipo+'|'+(v.cod||v.desc.replace(/\s+/g,' ').trim().toUpperCase());for(let i=0;i<6&&ALIAS[k];i++)k=ALIAS[k];return k};
+const vm=()=>[...new Set(C.map(c=>c.mese))].sort().filter(m=>!yr||m.startsWith(yr));
+function buildR(){const R={};for(const c of sorted())for(const v of c.voci){const k=vk(c,v),r=R[k]=R[k]||{k,tipo:c.tipo,sec:v.sec,cod:v.cod,desc:'',m:{},n:{}};r.sec=v.sec;r.cod=v.cod;r.desc=v.desc;r.m[c.mese]=(r.m[c.mese]||0)+v.imp;if(v.note)r.n[c.mese]=(r.n[c.mese]?r.n[c.mese]+' | ':'')+v.note}return R}
+const so=s=>{const i=SEC.indexOf(s.toLowerCase());return i<0?9:i};
+function od(R,tp){const ix=k=>{const i=ORD.indexOf(k);return i<0?1e9:i};return Object.values(R).filter(r=>r.tipo===tp).sort((a,b)=>so(a.sec)-so(b.sec)||(a.cod+a.desc).localeCompare(b.cod+b.desc)).sort((a,b)=>ix(a.k)-ix(b.k))}
+function saveOrd(tp,list){const R=buildR();ORD=TIPI.flatMap(t=>t===tp?list:od(R,t).map(r=>r.k));tx('pdf','readwrite',s=>s.put(ORD,'__order'));draw()}
+function mvBy(k,d){const tp=k.split('|')[0],R=buildR(),ms=vm(),f=od(R,tp),l=f.map(r=>r.k),v=f.filter(r=>ms.some(m=>r.m[m]!=null)).map(r=>r.k),t=v[v.indexOf(k)+d];if(!t)return;const a=l.indexOf(k),b=l.indexOf(t);[l[a],l[b]]=[l[b],l[a]];saveOrd(tp,l)}
+function mvTo(k,t){const tp=k.split('|')[0];if(t.split('|')[0]!==tp||k===t)return;const l=od(buildR(),tp).map(r=>r.k).filter(x=>x!==k);l.splice(l.indexOf(t),0,k);saveOrd(tp,l)}
+function vTab(){const all=[...new Set(C.map(c=>c.mese))].sort(),yrs=[...new Set(all.map(m=>m.slice(0,4)))];if(yr&&!yrs.includes(yr))yr='';const ms=all.filter(m=>!yr||m.startsWith(yr)),R=buildR(),ro=rmode&&!q;
+if(!ms.length)return'<div class="box mut">Carica almeno un cedolino.</div>';
+const tot=t=>ms.map(m=>{const x=C.filter(c=>c.mese===m&&t.includes(c.tipo));return x.length?x.reduce((s,c)=>s+c.netto,0):null});
+let h=`<div style="display:flex;gap:10px;margin-bottom:10px"><input type="search" id="qs" style="margin:0;flex:1" placeholder="Cerca codice o descrizione" value="${esc(q)}"><select id="ys" class="g"><option value="">Tutto il periodo</option>${yrs.map(y=>`<option${y===yr?' selected':''}>${y}</option>`).join('')}</select><button class="g" id="rm">${rmode?'Fine riordino':'Riordina righe'}</button></div>${rmode?'<p class="mut">Trascina le righe o usa le frecce.'+(q?' Svuota la ricerca per riordinare.':'')+'</p>':''}<div class="mx"><table><tr><th class="c1">Codice</th><th class="c2">Descrizione</th>${ms.map(m=>`<th>${m.slice(0,4)} ${m.slice(5)}</th>`).join('')}</tr>`;
+h+=`<tr class="t"><td class="c1" colspan="2">Netto (ordinario + pagamenti vari)</td>${tot(['Ordinario','Pagamenti vari']).map(v=>`<td>${fmt(v)}</td>`).join('')}</tr>`;
+for(const tp of TIPI){const rs=od(R,tp).filter(r=>ms.some(m=>r.m[m]!=null)&&(!q||(r.cod+' '+r.desc).toLowerCase().includes(q.toLowerCase())));if(!rs.length)continue;
+h+=`<tr class="h"><td colspan="${ms.length+2}">${tp}</td></tr>`;
+for(const r of rs)h+=`<tr data-k="${esc(r.k)}"${ro?' draggable="true"':''}><td class="c1" data-h="${esc(r.k)}">${esc(r.cod)}</td><td class="c2" data-h="${esc(r.k)}" title="${esc(r.desc)}">${ro?`<button class="g mv" data-mv="${esc(r.k)}" data-dir="-1">▲</button><button class="g mv" data-mv="${esc(r.k)}" data-dir="1">▼</button>`:''}${esc(r.desc)}</td>${ms.map(m=>{const v=r.m[m],n=r.n[m],u=NOTES[r.k+'@'+m];return`<td class="${(v==null?'':v<0?'n':'p')+(u?' mn':'')}" data-r="${esc(r.k)}" data-m="${m}"${n?` data-note="${esc(n)}"`:''}${n||u?` title="${esc([n,u].filter(Boolean).join(' | '))}"`:''}>${fmt(v)}</td>`}).join('')}</tr>`}
+return h+'</table></div>'}
+const chip=d=>d==null?'':`<span class="dc ${d>.004?'up':d<-.004?'dn':''}">${Math.abs(d)<.005?'=':(d>0?'+':'')+fmt(d)}</span>`;
+function vMx(){if(!C.length)return'<div class="box mut">Carica almeno un cedolino.</div>';
+return`<div class="sg">${[['mese','Mese'],['conf','Confronto'],['tab','Tabella']].map(([k,l])=>`<button data-xv="${k}" class="${xv===k?'on':''}">${l}</button>`).join('')}</div>`+(xv==='mese'?vMese():xv==='conf'?vConf():vTab())}
+function vMese(){const all=months();if(!all.includes(sm))sm=all[all.length-1];const i=all.indexOf(sm),pv=all[i-1],R=buildR(),nt=r=>[r.n[sm],NOTES[r.k+'@'+sm]].filter(Boolean).join(' | ');
+let h=`<div class="st"><button class="g bt" data-sm="${pv||''}">‹</button><span>${lab(sm)}</span><button class="g bt" data-sm="${all[i+1]||''}">›</button></div><div class="big">${fmt(nm(sm))} €</div>`+(pv?`${chip(nm(sm)-nm(pv))} <span class="mut">rispetto a ${lab(pv)}</span>`:'');
+for(const tp of TIPI){let ps=null;for(const r of od(R,tp).filter(r=>r.m[sm]!=null)){if(r.sec!==ps){ps=r.sec;h+=`<div class="sc">${tp==='Ordinario'?esc(r.sec):tp+' · '+esc(r.sec)}</div>`}
+const p=pv?r.m[pv]:undefined;h+=`<div class="v" data-h="${esc(r.k)}"><div>${esc(r.desc)}<small>${esc(r.cod)}${nt(r)?(r.cod?' · ':'')+esc(nt(r)):''}</small></div><span>${fmt(r.m[sm])}</span>${pv?(p==null?'<span class="dc new">nuova</span>':chip(r.m[sm]-p)):''}</div>`}}
+const gone=pv?Object.values(R).filter(r=>r.m[pv]!=null&&r.m[sm]==null):[];
+if(gone.length)h+='<div class="sc">Presenti il mese prima, assenti ora</div>'+gone.map(r=>`<div class="v" data-h="${esc(r.k)}"><div>${esc(r.desc)}<small>${esc(r.cod)}</small></div><span>${fmt(r.m[pv])}</span><span class="dc new">assente</span></div>`).join('');
+return h}
+function vConf(){const all=months();if(!all.includes(cb))cb=all[all.length-1];if(!all.includes(ca))ca=all[Math.max(0,all.length-2)];const R=buildR(),df=r=>(r.m[ca]==null)!==(r.m[cb]==null)||Math.abs((r.m[ca]||0)-(r.m[cb]||0))>.004,sel=(k,v)=>`<select data-sel="${k}" class="g">${all.map(m=>`<option value="${m}"${m===v?' selected':''}>${lab(m)}</option>`).join('')}</select>`;
+const rs=TIPI.flatMap(t=>od(R,t)).filter(r=>(r.m[ca]!=null||r.m[cb]!=null)&&(!cd||df(r)));
+return`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">${sel('sa',ca)} <span class="mut">contro</span> ${sel('sb',cb)}<label><input type="checkbox" data-sel="cd"${cd?' checked':''}> Solo differenze</label></div><div class="mx"><table><tr><th class="c1" style="max-width:none">Voce</th><th>${lab(ca)}</th><th>${lab(cb)}</th><th>Differenza</th></tr><tr class="t"><td class="c1" style="max-width:none">Netto</td><td>${fmt(nm(ca))}</td><td>${fmt(nm(cb))}</td><td>${chip(nm(cb)-nm(ca))}</td></tr>`
++rs.map(r=>`<tr data-h="${esc(r.k)}"><td class="c1" style="max-width:none;min-width:220px;white-space:normal">${esc(r.desc)}<br><small class="mut">${esc(r.cod)}${r.tipo==='Ordinario'?'':' · '+r.tipo}</small></td><td>${fmt(r.m[ca])}</td><td>${fmt(r.m[cb])}</td><td>${r.m[ca]==null?'<span class="dc new">nuova</span>':r.m[cb]==null?'<span class="dc new">assente</span>':chip(r.m[cb]-r.m[ca])}</td></tr>`).join('')+`</table></div>${rs.length?'':'<p class="mut">Nessuna differenza tra i due mesi.</p>'}`}
+function openHist(k){const R=buildR(),r=R[k];if(!r)return;const ms=Object.keys(r.m).sort(),v=ms.map(m=>r.m[m]),lo=Math.min(0,...v),hi=Math.max(0,...v),sp=hi-lo||1,H=110,bw=28,y=x=>(hi-x)/sp*H+8;
+let ov=document.getElementById('pv');if(ov)ov.remove();ov=document.createElement('div');ov.id='pv';
+const bars=ms.map((m,i)=>`<rect x="${10+i*bw}" y="${Math.min(y(v[i]),y(0))}" width="${bw-6}" height="${Math.max(1,Math.abs(y(v[i])-y(0)))}" style="fill:var(${v[i]<0?'--p':'--o'})"><title>${lab(m)}: ${fmt(v[i])}</title></rect><text x="${10+i*bw+(bw-6)/2}" y="${H+24}" font-size="8" text-anchor="middle" fill="var(--mut)">${m.slice(2,4)}/${m.slice(5)}</text>`).join('');
+const ch=v.reduce((n,x,i)=>n+(i&&Math.abs(x-v[i-1])>.004?1:0),0),avg=v.reduce((a,b)=>a+b,0)/v.length;
+const opts=Object.values(R).filter(o=>o.tipo===r.tipo&&o.k!==k).map(o=>`<option value="${esc(o.k)}">${esc(o.cod)} ${esc(o.desc)}</option>`).join('');
+const un=Object.entries(ALIAS).filter(([a,b])=>b===k).map(([a])=>`<div class="row"><span>Unita: ${esc(a.split('|').slice(1).join(' '))}</span><button class="g" data-un="${esc(a)}">Separa</button></div>`).join('');
+ov.innerHTML=`<div class="ph"><b>${esc(r.cod)} ${esc(r.desc)}</b><button class="b" id="pc">Chiudi</button></div><div style="padding:8px 4px"><div class="mx" style="max-height:none"><svg width="${ms.length*bw+20}" height="${H+32}" role="img" aria-label="Andamento della voce">${bars}</svg></div><p class="mut">${v.length} mesi · minimo ${fmt(Math.min(...v))} · massimo ${fmt(Math.max(...v))} · media ${fmt(avg)} · ${ch} variazioni</p><table>${ms.slice().reverse().map((m,i,a)=>`<tr><td style="text-align:left">${lab(m)}</td><td>${fmt(r.m[m])}</td><td>${a[i+1]?chip(r.m[m]-r.m[a[i+1]]):''}</td><td style="text-align:left;white-space:normal">${esc([r.n[m],NOTES[k+'@'+m]].filter(Boolean).join(' | '))}</td></tr>`).join('')}</table>${un}<div class="box" style="margin-top:12px"><b>Unisci questa riga in un'altra</b><p class="mut">Utile quando la stessa voce cambia codice (per esempio con il cambio di grado). La riga scelta resta, questa viene assorbita.</p><select id="mt" class="g"><option value="">Scegli...</option>${opts}</select> <button class="b" data-mg="${esc(k)}">Unisci</button></div></div>`;document.body.appendChild(ov)}
+function addAlias(a,b){ALIAS[a]=b;for(const x in ALIAS)if(ALIAS[x]===a)ALIAS[x]=b;for(const n of Object.keys(NOTES))if(n.startsWith(a+'@')){const t=b+n.slice(a.length);if(!NOTES[t])NOTES[t]=NOTES[n];delete NOTES[n]}ORD=ORD.filter(x=>x!==a);const p=(k,x)=>tx('pdf','readwrite',t=>t.put(x,k));p('__alias',ALIAS);p('__notes',NOTES);p('__order',ORD)}
+function vRiep(){const Y={};for(const c of C){const y=c.mese.slice(0,4),o=Y[y]=Y[y]||{c:0,p:0,f:0,a:0,n:0,u:0,mo:new Set(),bad:0};if(!c.ok)o.bad++;if(c.tipo==='CUSI'){o.u+=c.netto;continue}if(c.tipo==='Ordinario')o.mo.add(c.mese);o.n+=c.netto;for(const v of c.voci){if(v.cod==='PREV')o.p+=v.imp;else if(v.cod==='FISC')o.f+=v.imp;else if(/^competenze/i.test(v.sec))o.c+=v.imp;else o.a+=v.imp}}
+return`<div class="box"><b>Riepilogo annuale</b><div class="mx" style="margin-top:8px"><table><tr><th>Anno</th><th>Mesi ord.</th><th>Competenze</th><th>Previdenziali</th><th>IRPEF</th><th>Altre ritenute</th><th>Netto</th><th>CUSI</th><th>Incassato</th></tr>${Object.keys(Y).sort().reverse().map(y=>{const o=Y[y];return`<tr><td style="text-align:left">${y}${o.bad?' <span class="ko" title="Cedolini da verificare">!</span>':''}</td><td>${o.mo.size}/12</td><td>${fmt(o.c)}</td><td>${fmt(o.p)}</td><td>${fmt(o.f)}</td><td>${fmt(o.a)}</td><td>${fmt(o.n)}</td><td>${fmt(o.u)}</td><td><b>${fmt(o.n+o.u)}</b></td></tr>`}).join('')}</table></div><p class="mut">Ordinario e pagamenti vari sommati. IRPEF = ritenute fiscali al netto delle detrazioni lette dai cedolini NoiPA, da confrontare con la CU. Il segno ! indica cedolini da verificare: i totali di quell'anno potrebbero essere incompleti.</p></div>`}
+function vAn(){const ms=[...new Set(C.map(c=>c.mese))].sort();if(!ms.length)return'<div class="box mut">Carica almeno un cedolino.</div>';
+const TT=[['Ordinario','--o'],['Pagamenti vari','--p'],['CUSI','--u']],S=ms.map(m=>TT.map(([t])=>Math.max(0,C.filter(c=>c.mese===m&&c.tipo===t).reduce((x,c)=>x+c.netto,0)))),tt=S.map(a=>a[0]+a[1]+a[2]),mx=Math.max(...tt,1),bw=Math.min(46,600/ms.length);
+const leg=`<div style="margin:6px 0">${TT.map(([t,v])=>`<span style="margin-right:14px"><span style="display:inline-block;width:11px;height:11px;background:var(${v});margin-right:4px"></span>${t}</span>`).join('')}</div>`;
+const svg=`<svg viewBox="0 0 ${ms.length*bw+20} 190" style="width:100%;max-height:260px">${ms.map((m,i)=>{let y=150;const x=10+i*bw,bars=TT.map(([t,v],j)=>{const h=S[i][j]/mx*140;y-=h;return h>0?`<rect x="${x+3}" y="${y}" width="${bw-6}" height="${h}" style="fill:var(${v})"><title>${t}: ${fmt(S[i][j])}</title></rect>`:''}).join('');return bars+`<text x="${x+bw/2}" y="166" font-size="9" text-anchor="middle" fill="var(--mut)">${m.slice(2,4)}/${m.slice(5)}</text><text x="${x+bw/2}" y="${y-4}" font-size="8" text-anchor="middle" fill="var(--ink)">${Math.round(tt[i])}</text>`}).join('')}</svg>`;
+const an=[];const get=(m,t)=>C.find(c=>c.mese===m&&c.tipo===t);
+for(let i=1;i<ms.length;i++){const a=get(ms[i-1],'Ordinario'),b=get(ms[i],'Ordinario');if(!a||!b)continue;const key=v=>(v.cod||v.desc),A=Object.fromEntries(a.voci.map(v=>[key(v),v])),B=Object.fromEntries(b.voci.map(v=>[key(v),v]));
+for(const k in B){if(!A[k])an.push(`${lab(ms[i])}: voce nuova ${k} ${B[k].desc} (${fmt(B[k].imp)})`);else if(Math.abs(B[k].imp-A[k].imp)>Math.abs(A[k].imp)*.05+.005&&!/PREV|FISC|ST01/.test(k))an.push(`${lab(ms[i])}: ${k} ${B[k].desc} da ${fmt(A[k].imp)} a ${fmt(B[k].imp)}`)}
+for(const k in A)if(!B[k])an.push(`${lab(ms[i])}: voce assente ${k} ${A[k].desc} (prima ${fmt(A[k].imp)})`)}
+const bad=C.filter(c=>!c.ok).map(c=>`${lab(c.mese)} ${c.tipo}: somma voci diversa dal netto di ${fmt(c.diff)}`);
+return`<div class="box"><b>Netto per mese</b>${leg}${svg}</div>${vRiep()}<div class="box"><b>Controlli di quadratura</b>${bad.length?bad.map(x=>`<div class="row"><span class="ko">${x}</span></div>`).join(''):'<div class="ok">Tutti i cedolini quadrano col netto.</div>'}</div>
+<div class="box"><b>Variazioni tra cedolini ordinari consecutivi</b>${an.length?an.slice(-60).map(x=>`<div class="row">${esc(x)}</div>`).join(''):'<div class="mut">Nessuna variazione oltre il 5%.</div>'}</div>`}
+function vBk(){const alBox=Object.keys(ALIAS).length?`<div class="box"><b>Righe unite</b>${Object.entries(ALIAS).map(([a,b])=>`<div class="row"><span>${esc(a.split('|').slice(1).join(' '))} → ${esc(b.split('|').slice(1).join(' '))}</span><button class="g" data-un="${esc(a)}">Separa</button></div>`).join('')}</div>`:'';const rows=['mese;tipo;sezione;codice;descrizione;nota;importo'];sorted().forEach(c=>c.voci.forEach(v=>rows.push([c.mese,c.tipo,v.sec,v.cod,v.desc,[v.note,NOTES[vk(c,v)+'@'+c.mese]].filter(Boolean).join(' | '),String(v.imp).replace('.',',')].join(';'))));
+return`<div class="box"><b>Esporta CSV</b> <span class="mut">(copia e incolla in Excel)</span><textarea readonly onclick="this.select()">${esc(rows.join('\n'))}</textarea></div>
+${alBox}<div class="box"><b>Sincronizzazione tra dispositivi</b><p class="mut">Salva il file e mettilo in Proton Drive; sull'altro dispositivo importalo da lì. Importare unisce i dati senza creare duplicati: i cedolini con lo stesso ID vengono aggiornati, note e ordine righe si uniscono.</p><label><input type="checkbox" id="wp" checked> Includi i PDF (file più grande)</label><br><br><button class="b" id="sv">Salva file</button> <label class="b">Importa file<input id="if" type="file" accept=".json,application/json" hidden></label></div><div class="box"><b>Rielabora i PDF archiviati</b><p class="mut">Rilegge tutti i PDF salvati con la versione attuale del lettore. Note personali e ordine delle righe restano.</p><button class="b" id="ra">Rielabora tutto</button></div><div class="box"><b>Ricomincia da zero</b><p class="mut">Cancella cedolini, PDF, note e ordine salvati in questo browser.</p><button class="g" id="rs">Cancella tutto</button></div>`}
+const TABS={up:['Carica',vUp],arc:['Archivio',vArc],mx:['Matrice',vMx],an:['Analisi',vAn],bk:['Backup',vBk]};
+function draw(){const sx=document.querySelector('.mx'),sp=sx?[sx.scrollLeft,sx.scrollTop]:null;$nav.innerHTML=Object.entries(TABS).map(([k,[l]])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$m.innerHTML=TABS[tab][1]();const nx=document.querySelector('.mx');if(sp&&nx){nx.scrollLeft=sp[0];nx.scrollTop=sp[1]}
+const fi=document.getElementById('fi'),dz=document.getElementById('dz');
+if(fi){fi.onchange=()=>addFiles(fi.files);dz.ondragover=e=>e.preventDefault();dz.ondrop=e=>{e.preventDefault();addFiles(e.dataTransfer.files)}}
+const qs=document.getElementById('qs');if(qs)qs.oninput=()=>{q=qs.value;const p=qs.selectionStart;draw();const n=document.getElementById('qs');n.focus();n.setSelectionRange(p,p)};
+document.querySelectorAll('[data-sel]').forEach(e=>{e.onchange=()=>{const v=e.type==='checkbox'?e.checked:e.value,k=e.dataset.sel;if(k==='sa')ca=v;else if(k==='sb')cb=v;else cd=v;draw()}});const ys=document.getElementById('ys');if(ys)ys.onchange=()=>{yr=ys.value;draw()};const iff=document.getElementById('if');if(iff)iff.onchange=()=>importSync(iff.files[0]);}
+const $nav=document.getElementById('nav'),$m=document.getElementById('m');
+const tip=document.getElementById('tip');let cur=null,arm=null;
+document.body.onclick=async e=>{const hv=e.target.closest('[data-h]');if(hv&&!e.target.closest('button')&&!e.target.closest('#pv')){tip.hidden=true;openHist(hv.dataset.h);return}
+if(!e.target.closest('#tip')){const td=e.target.closest('td[data-r]');if(td){cur=td.dataset.r+'@'+td.dataset.m;const n=td.dataset.note;tip.innerHTML=(n?`<div class="mut">Dal cedolino: ${esc(n)}</div>`:'')+`<textarea id="nt" placeholder="Nota personale su questo importo"></textarea><button class="b" id="ns">Salva</button> <button class="g" id="nc">Chiudi</button>`;tip.hidden=false;document.getElementById('nt').value=NOTES[cur]||'';tip.style.left=Math.max(4,Math.min(e.clientX,innerWidth-270))+'px';tip.style.top=Math.min(e.clientY+14,innerHeight-200)+'px'}else tip.hidden=true}
+const b=e.target.closest('button');if(!b)return;
+if(b.id==='nc')tip.hidden=true;
+if(b.id==='ns'){const v=document.getElementById('nt').value.trim();if(v)NOTES[cur]=v;else delete NOTES[cur];tx('pdf','readwrite',s=>s.put(NOTES,'__notes'));tip.hidden=true;draw()}
+if(b.id==='ra')reparse();
+if(b.id==='sv')saveSync();
+if(b.id==='rs'){if(arm!=='rs'){arm='rs';b.textContent='Clicca ancora per cancellare tutto';b.classList.add('b');setTimeout(()=>{if(arm==='rs'){arm=null;if(b.isConnected){b.textContent='Cancella tutto';b.classList.remove('b')}}},5000);return}arm=null;await tx('ced','readwrite',s=>s.clear());await tx('pdf','readwrite',s=>s.clear());C=[];ORD=[];NOTES={};ALIAS={};log=[];tab='up';toast('Archivio azzerato');draw()}
+if(b.id==='rm'){rmode=!rmode;draw()}
+if(b.dataset.mv)mvBy(b.dataset.mv,+b.dataset.dir);
+if(b.dataset.t){tab=b.dataset.t;draw()}
+if(b.id==='pc')document.getElementById('pv').remove();
+if(b.dataset.xv){xv=b.dataset.xv;draw()}
+if(b.dataset.sm){sm=b.dataset.sm;draw()}
+if(b.dataset.gm){sm=b.dataset.gm;xv='mese';tab='mx';draw()}
+if(b.dataset.ay){ay=b.dataset.ay;draw()}
+if(b.dataset.mg){const to=document.getElementById('mt').value;if(to){addAlias(b.dataset.mg,to);document.getElementById('pv').remove();toast('Righe unite');draw()}}
+if(b.dataset.un){delete ALIAS[b.dataset.un];tx('pdf','readwrite',s=>s.put(ALIAS,'__alias'));const o=document.getElementById('pv');if(o)o.remove();toast('Righe separate');draw()}
+if(b.dataset.d){const id=b.dataset.d;if(arm!==id){arm=id;b.textContent='Confermi?';b.classList.add('b');setTimeout(()=>{if(arm===id){arm=null;if(b.isConnected){b.textContent='✕';b.classList.remove('b')}}},4000);return}arm=null;await tx('ced','readwrite',s=>s.delete(id));await tx('pdf','readwrite',s=>s.delete(id));C=C.filter(c=>c.id!==id);toast('Cedolino eliminato');draw()}
+if(b.dataset.o)openPdf(b.dataset.o);};
+let dk=null;document.addEventListener('dragstart',e=>{const r=e.target.closest&&e.target.closest('tr[data-k]');dk=r?r.dataset.k:null});
+document.addEventListener('dragover',e=>{if(dk)e.preventDefault()});
+document.addEventListener('drop',e=>{const r=e.target.closest('tr[data-k]');if(!dk||!r)return;e.preventDefault();mvTo(dk,r.dataset.k);dk=null});
+(async()=>{C=(await tx('ced','readonly',s=>s.getAll()))||[];const TM={'Straordinario':'Pagamenti vari','Fuori busta':'Pagamenti vari','Legge 86/01':'CUSI'};
+for(const c of C){c.voci.forEach(norm);const old=c.id;let ch=false;if(TM[c.tipo]){c.tipo=TM[c.tipo];ch=true}
+if(old.startsWith('L86-')){c.id='CUSI-'+c.mese+'-1';const b=await tx('pdf','readonly',s=>s.get(old));if(b)await tx('pdf','readwrite',s=>s.put(b,c.id));await tx('pdf','readwrite',s=>s.delete(old));await tx('ced','readwrite',s=>s.delete(old));ch=true}
+if(ch)await tx('ced','readwrite',s=>s.put(c))}
+ORD=((await tx('pdf','readonly',s=>s.get('__order')))||[]).map(k=>k.replace(/^(Fuori busta|Straordinario)\|/,'Pagamenti vari|').replace(/^Legge 86\/01\|/,'CUSI|'));NOTES=(await tx('pdf','readonly',s=>s.get('__notes')))||{};ALIAS=(await tx('pdf','readonly',s=>s.get('__alias')))||{};const nk=k=>{const [a,b]=k.split('@'),p=a.split('|');return(p.length===3?p.slice(0,2).join('|'):a)+(b!==undefined?'@'+b:'')};ORD=[...new Set(ORD.map(nk))];const N0=NOTES;NOTES={};for(const k in N0)NOTES[nk(k)]=N0[k];draw()})();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+</script></body></html>
