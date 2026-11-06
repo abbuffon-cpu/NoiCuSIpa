@@ -39,7 +39,7 @@ Il secondo passaggio del workflow scrive un file con la data nel repository: ser
 Nella vecchia versione: Backup > "Salva file" (con i PDF). Nella nuova: Backup > "Importa file".
 
 ## Aggiornamenti
-Sostituisci i file nel repository e cambia `cedolini-v4` in `cedolini-v5` dentro `sw.js`. L'app si aggiorna alla riapertura successiva.
+Sostituisci i file nel repository e cambia `cedolini-v5` in `cedolini-v6` dentro `sw.js`. L'app si aggiorna alla riapertura successiva.
 
 ## Dati
 Sono salvati nel browser del dispositivo (IndexedDB). Fai backup periodici con "Salva file".
