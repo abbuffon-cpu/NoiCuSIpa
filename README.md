@@ -28,6 +28,10 @@ Senza, l'app funziona lo stesso ma scarica il lettore PDF da internet al primo a
 
 I dati (cedolini, PDF, note, ordine righe, unioni di codici) sono cifrati nel browser con AES-256 prima di essere inviati. Supabase conserva solo dati illeggibili. **Se perdi la passphrase i dati nel cloud non sono recuperabili**: tieni anche un backup con "Salva file". La sincronizzazione parte da sola dopo ogni modifica e quando riapri l'app; sul dispositivo restano comunque tutti i dati, quindi l'app funziona anche offline.
 
+## Passphrase dimenticata o da cambiare
+- **Da un dispositivo ancora collegato** (Backup > Cloud): scrivi la nuova passphrase e premi "Cambia passphrase". I dati vengono ricifrati. Sugli altri dispositivi premi "Esci" e rientra con la nuova passphrase.
+- **Se nessun dispositivo e` piu collegato**: la vecchia passphrase non si puo recuperare (e` voluto). Dal dispositivo che ha tutti i cedolini fai Accedi con la casella "Ho dimenticato la passphrase" spuntata: il cloud viene cancellato e ricaricato da quel dispositivo con la nuova passphrase. Prima fai un backup con "Salva file".
+
 ## Tenere attivo il progetto Supabase (GitHub Actions)
 Il piano gratuito mette in pausa i progetti inattivi per circa una settimana. Questo automatismo contatta il progetto due volte a settimana (lunedi e giovedi).
 1. Nel repository GitHub: Add file > Create new file. Come nome scrivi `.github/workflows/keepalive.yml` (le barre creano le cartelle) e incolla il contenuto del file `github-keepalive.yml` di questo pacchetto. Commit. Non trascinare la cartella `.github`: i file nascosti spesso non vengono caricati.
@@ -39,7 +43,7 @@ Il secondo passaggio del workflow scrive un file con la data nel repository: ser
 Nella vecchia versione: Backup > "Salva file" (con i PDF). Nella nuova: Backup > "Importa file".
 
 ## Aggiornamenti
-Sostituisci i file nel repository e cambia `cedolini-v5` in `cedolini-v6` dentro `sw.js`. L'app si aggiorna alla riapertura successiva.
+Sostituisci i file nel repository e cambia `cedolini-v7` in `cedolini-v8` e il numero in APPV dentro index.html dentro `sw.js`. L'app si aggiorna alla riapertura successiva.
 
 ## Dati
 Sono salvati nel browser del dispositivo (IndexedDB). Fai backup periodici con "Salva file".
