@@ -32,6 +32,14 @@ I dati (cedolini, PDF, note, ordine righe, unioni di codici) sono cifrati nel br
 - **Da un dispositivo ancora collegato** (Backup > Cloud): scrivi la nuova passphrase e premi "Cambia passphrase". I dati vengono ricifrati. Sugli altri dispositivi premi "Esci" e rientra con la nuova passphrase.
 - **Se nessun dispositivo e` piu collegato**: la vecchia passphrase non si puo recuperare (e` voluto). Dal dispositivo che ha tutti i cedolini fai Accedi con la casella "Ho dimenticato la passphrase" spuntata: il cloud viene cancellato e ricaricato da quel dispositivo con la nuova passphrase. Prima fai un backup con "Salva file".
 
+## Problemi con i dati nel cloud
+- Errore "Dato cifrato non valido" o "atob": la colonna `data` della tabella `vault` non e` di tipo `text`, oppure contiene righe vecchie danneggiate. In Supabase > SQL Editor controlla il tipo con:
+  `select data_type from information_schema.columns where table_name='vault' and column_name='data';`
+  Deve rispondere `text`. Per svuotare tutta la tabella (i dati cifrati nel cloud; quelli nei dispositivi non si toccano):
+  `delete from public.vault;`
+  Poi accedi di nuovo dall'app con una nuova passphrase.
+- L'errore mostra tra parentesi il passo in cui e` avvenuto (es. "[passo: lettura chiave cloud]"): comunicalo se serve assistenza.
+
 ## Tenere attivo il progetto Supabase (GitHub Actions)
 Il piano gratuito mette in pausa i progetti inattivi per circa una settimana. Questo automatismo contatta il progetto due volte a settimana (lunedi e giovedi).
 1. Nel repository GitHub: Add file > Create new file. Come nome scrivi `.github/workflows/keepalive.yml` (le barre creano le cartelle) e incolla il contenuto del file `github-keepalive.yml` di questo pacchetto. Commit. Non trascinare la cartella `.github`: i file nascosti spesso non vengono caricati.
@@ -43,7 +51,7 @@ Il secondo passaggio del workflow scrive un file con la data nel repository: ser
 Nella vecchia versione: Backup > "Salva file" (con i PDF). Nella nuova: Backup > "Importa file".
 
 ## Aggiornamenti
-Sostituisci i file nel repository e cambia `cedolini-v7` in `cedolini-v8` e il numero in APPV dentro index.html dentro `sw.js`. L'app si aggiorna alla riapertura successiva.
+Sostituisci i file nel repository e cambia `cedolini-v8` in `cedolini-v9` e il numero in APPV dentro index.html dentro `sw.js`. L'app si aggiorna alla riapertura successiva.
 
 ## Dati
 Sono salvati nel browser del dispositivo (IndexedDB). Fai backup periodici con "Salva file".
