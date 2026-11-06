@@ -50,6 +50,7 @@ select.g{background:var(--pn)}
 .big{font-size:32px;font-weight:600}.dc{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;background:var(--bg);color:var(--mut)}.dc.up{background:var(--pos);color:var(--ink)}.dc.dn{background:var(--neg);color:var(--ink)}.dc.new{background:var(--wn);color:var(--ink)}
 .sc{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:16px 0 4px;font-weight:600}.v{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--ln);cursor:pointer;max-width:620px}.v>div{flex:1}.v small{display:block;color:var(--mut);font-size:12px}
 [data-h]{cursor:pointer}
+.box input:not([type=checkbox]){width:100%;padding:8px;margin-bottom:8px;border:1px solid var(--ln);border-radius:4px;background:var(--pn);color:var(--ink);font:inherit}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 </style></head><body>
 <header><h1>Archivio cedolini</h1><p class="s">I PDF restano nel tuo browser: nulla viene inviato a server.</p>
@@ -65,7 +66,7 @@ const lab=m=>MESI[+m.slice(5)-1]+' '+m.slice(0,4);
 let C=[],tab='up',log=[],q='',ORD=[],rmode=false,NOTES={},yr='',ay='',xv=innerWidth<700?'mese':'tab',sm='',ca='',cb='',cd=true,ALIAS={};
 /* storage (IndexedDB, private al browser) */
 const dbp=new Promise((res,rej)=>{try{const r=indexedDB.open('cedolini',1);r.onupgradeneeded=()=>{r.result.createObjectStore('ced',{keyPath:'id'});r.result.createObjectStore('pdf')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}});
-const tx=async(s,m,f)=>{try{const d=await dbp;return await new Promise((res,rej)=>{const t=d.transaction(s,m);const r=f(t.objectStore(s));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error)})}catch(e){console.warn(e)}};
+let DIRTY=false;const tx=async(s,m,f,q)=>{if(m==='readwrite'&&!q)DIRTY=true;try{const d=await dbp;return await new Promise((res,rej)=>{const t=d.transaction(s,m);const r=f(t.objectStore(s));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error)})}catch(e){console.warn(e)}};
 /* estrazione testo con coordinate */
 async function extract(buf){const pdf=await pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0))}).promise,pages=[];
 for(let p=1;p<=pdf.numPages;p++){const pg=await pdf.getPage(p),pw=pg.getViewport({scale:1}).width,tc=await pg.getTextContent();
@@ -120,6 +121,48 @@ let ov=document.getElementById('pv');if(ov)ov.remove();ov=document.createElement
 ov.innerHTML=`<div class="ph"><b>${esc(c?lab(c.mese)+' - '+c.tipo:'PDF')}</b><button class="b" id="pc">Chiudi</button></div><div id="pb" class="mut">Caricamento...</div>`;document.body.appendChild(ov);
 try{const pdf=await pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0))}).promise,pb=document.getElementById('pb');pb.textContent='';
 for(let p=1;p<=pdf.numPages;p++){const pg=await pdf.getPage(p),w=Math.min(ov.clientWidth-16,900),sc=w/pg.getViewport({scale:1}).width,dr=window.devicePixelRatio||1,v=pg.getViewport({scale:sc*dr}),cv=document.createElement('canvas');cv.width=v.width;cv.height=v.height;cv.style.width=w+'px';cv.style.height=(v.height/dr)+'px';pb.appendChild(cv);await pg.render({canvasContext:cv.getContext('2d'),viewport:v}).promise}}catch(e){toast('PDF non leggibile')}}
+const CLOUD=!/claude/i.test(location.hostname),enc=new TextEncoder(),dec=new TextDecoder();
+let CFG=null,AUTH=null,KEY=null,SM={},SYNCING=false,SS='',MB={n:{},a:{}};
+const hsh=async b=>b64(await crypto.subtle.digest('SHA-256',b)),same=(a,b)=>Date.parse(a)===Date.parse(b);
+async function derive(p,salt){const k=await crypto.subtle.importKey('raw',enc.encode(p),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function seal(buf){const iv=crypto.getRandomValues(new Uint8Array(12)),ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},KEY,buf)),o=new Uint8Array(12+ct.length);o.set(iv);o.set(ct,12);return b64(o)}
+async function unseal(t){const o=new Uint8Array(unb64(t));return crypto.subtle.decrypt({name:'AES-GCM',iv:o.slice(0,12)},KEY,o.slice(12))}
+async function authCall(grant,body){const r=await fetch(CFG.url+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:CFG.key,'Content-Type':'application/json'},body:JSON.stringify(body)}),j=await r.json();if(!r.ok)throw Error(j.error_description||j.msg||'Accesso non riuscito');AUTH={access_token:j.access_token,refresh_token:j.refresh_token,exp:Date.now()+j.expires_in*1000};await tx('pdf','readwrite',s=>s.put(AUTH,'__auth'),1)}
+async function sb(path,o={}){if(!AUTH||AUTH.exp<Date.now()+60000)await authCall('refresh_token',{refresh_token:AUTH&&AUTH.refresh_token});const r=await fetch(CFG.url+'/rest/v1/'+path,{...o,headers:{apikey:CFG.key,Authorization:'Bearer '+AUTH.access_token,'Content-Type':'application/json',...(o.headers||{})}}),t=await r.text();if(!r.ok)throw Error(t.slice(0,160));return t?JSON.parse(t):null}
+const UP={method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'}};
+async function cloudLogin(url,key,email,pass,phrase){CFG={url:url.trim().replace(/\/+$/,''),key:key.trim(),email:email.trim()};await authCall('password',{email:CFG.email,password:pass});
+const rows=await sb('vault?select=data&kind=eq.sys&id=eq.salt');let salt;
+if(rows.length){salt=new Uint8Array(unb64(rows[0].data));KEY=await derive(phrase,salt);const c=await sb('vault?select=data&kind=eq.sys&id=eq.check');try{if(dec.decode(await unseal(c[0].data))!=='cedolini-ok')throw 0}catch(e){KEY=null;throw Error('Passphrase errata')}}
+else{salt=crypto.getRandomValues(new Uint8Array(16));KEY=await derive(phrase,salt);const row=(id,d)=>({kind:'sys',id,updated_at:new Date().toISOString(),deleted:false,data:d});await sb('vault?on_conflict=user_id,kind,id',{...UP,body:JSON.stringify([row('salt',b64(salt)),row('check',await seal(enc.encode('cedolini-ok')))])})}
+for(const [k,v] of [['__cfg',CFG],['__key',KEY]])await tx('pdf','readwrite',s=>s.put(v,k),1)}
+async function sync(){if(SYNCING||!CFG||!AUTH||!KEY)return;SYNCING=true;DIRTY=false;let pulled=0;try{
+const RM={};for(const r of await sb('vault?select=kind,id,updated_at,deleted&kind=neq.sys'))RM[r.kind+'|'+r.id]={u:r.updated_at,del:r.deleted};
+const L={},put=(k,d)=>{L[k]={d}},meta=()=>enc.encode(JSON.stringify({notes:NOTES,ord:ORD,alias:ALIAS})).buffer;
+for(const c of C)put('ced|'+c.id,enc.encode(JSON.stringify(c)).buffer);
+for(const k of(await tx('pdf','readonly',s=>s.getAllKeys()))||[])if(!String(k).startsWith('__')){const b=await tx('pdf','readonly',s=>s.get(k));if(b)put('pdf|'+k,b)}
+put('meta|state',meta());for(const k in L)L[k].h=await hsh(L[k].d);
+const sp=k=>{const [kind,...q]=k.split('|');return[kind,q.join('|')]};
+const setMB=async()=>{MB={n:{...NOTES},a:{...ALIAS}};await tx('pdf','readwrite',s=>s.put(MB,'__mbase'),1)};
+const push=async(k,del)=>{const [kind,id]=sp(k),u=new Date().toISOString();await sb('vault?on_conflict=user_id,kind,id',{...UP,body:JSON.stringify([{kind,id,updated_at:u,deleted:!!del,data:del?null:await seal(L[k].d)}])});SM[k]={h:del?null:L[k].h,u,del:!!del};if(k==='meta|state'&&!del)await setMB()};
+const saveMeta=async()=>{for(const [n,v] of [['__notes',NOTES],['__order',ORD],['__alias',ALIAS]])await tx('pdf','readwrite',s=>s.put(v,n),1)};
+const pull=async k=>{const [kind,id]=sp(k),rows=await sb('vault?select=data,updated_at&kind=eq.'+kind+'&id=eq.'+encodeURIComponent(id)),buf=await unseal(rows[0].data);
+if(kind==='ced'){const c=JSON.parse(dec.decode(buf));c.voci.forEach(norm);await tx('ced','readwrite',s=>s.put(c),1);C=C.filter(x=>x.id!==c.id);C.push(c)}
+else if(kind==='pdf')await tx('pdf','readwrite',s=>s.put(buf,id),1);
+else{const m=JSON.parse(dec.decode(buf));NOTES=m.notes||{};ORD=m.ord||[];ALIAS=m.alias||{};await saveMeta();await setMB()}
+SM[k]={h:await hsh(buf),u:rows[0].updated_at,del:false};pulled++};
+const delLocal=async k=>{const [kind,id]=sp(k);if(kind==='ced'){await tx('ced','readwrite',s=>s.delete(id),1);C=C.filter(x=>x.id!==id)}else if(kind==='pdf')await tx('pdf','readwrite',s=>s.delete(id),1);delete SM[k];pulled++};
+for(const k of new Set([...Object.keys(L),...Object.keys(RM),...Object.keys(SM)])){const l=L[k],r=RM[k],b=SM[k],lc=l&&(!b||l.h!==b.h),rc=r&&(!b||!same(r.u,b.u));
+if(l){if(!r||(r.del&&lc))await push(k);else if(r.del)await delLocal(k);
+else if(lc&&rc){if(k==='meta|state'){const m={n:{...NOTES},o:[...ORD],a:{...ALIAS}},bs=MB;await pull(k);const m3=(l,r,b)=>{const o={};for(const x of new Set([...Object.keys(l),...Object.keys(r)])){const lv=l[x],rv=r[x],bv=(b||{})[x],v=lv===rv?lv:lv===bv?rv:rv===bv?lv:lv;if(v!==undefined)o[x]=v}return o};NOTES=m3(m.n,NOTES,bs.n);ALIAS=m3(m.a,ALIAS,bs.a);ORD=[...new Set([...m.o,...ORD])];await saveMeta();L[k].d=meta();L[k].h=await hsh(L[k].d)}await push(k)}
+else if(lc)await push(k);else if(rc)await pull(k)}
+else if(r&&!r.del){if(b&&!b.del&&!rc)await push(k,1);else await pull(k)}
+else delete SM[k]}
+await tx('pdf','readwrite',s=>s.put(SM,'__sync'),1);SS='Sincronizzato alle '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});if(pulled)draw()}catch(e){SS='Errore: '+e.message}SYNCING=false;if(tab==='bk')draw()}
+async function cloudOut(){for(const k of['__auth','__key','__sync','__mbase'])await tx('pdf','readwrite',s=>s.delete(k),1);AUTH=KEY=null;SM={};MB={n:{},a:{}};SS='';draw()}
+async function cloudInit(){if(!CLOUD)return;const g=k=>tx('pdf','readonly',s=>s.get(k));CFG=(await g('__cfg'))||null;AUTH=(await g('__auth'))||null;KEY=(await g('__key'))||null;SM=(await g('__sync'))||{};MB=(await g('__mbase'))||{n:{},a:{}};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')sync()});setInterval(()=>{if(DIRTY)sync()},15000);sync()}
+function cloudBox(){if(!CLOUD)return'<div class="box mut">La sincronizzazione cloud è disponibile solo nella versione installata (PWA).</div>';const on=AUTH&&KEY;
+return`<div class="box"><b>Cloud (Supabase, cifrato)</b><p class="mut">${on?'Collegato come '+esc(CFG.email||'')+'. '+esc(SS||'In attesa della prima sincronizzazione.'):'Non collegato. I dati vengono cifrati su questo dispositivo prima dell\'invio.'}</p>`+(on?'<button class="b" id="cs">Sincronizza ora</button> <button class="g" id="co">Esci</button>':`<input id="cu" placeholder="URL del progetto (https://xxxx.supabase.co)" value="${esc(CFG&&CFG.url||'')}"><input id="ck" placeholder="Chiave anon (pubblica)" value="${esc(CFG&&CFG.key||'')}"><input id="ce" type="email" placeholder="Email dell'account" value="${esc(CFG&&CFG.email||'')}"><input id="cp" type="password" placeholder="Password dell'account"><input id="cf" type="password" placeholder="Passphrase di cifratura (min. 8 caratteri, non recuperabile)"><button class="b" id="ci">Accedi</button>`)+'</div>'}
 const b64=buf=>{let t='';const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=8192)t+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(t)};
 const unb64=t=>{const x=atob(t),u=new Uint8Array(x.length);for(let i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return u.buffer};
 async function saveSync(){const d={v:1,c:C,notes:NOTES,ord:ORD,alias:ALIAS};if(document.getElementById('wp').checked){d.pdf={};for(const c of C){const b=await tx('pdf','readonly',s=>s.get(c.id));if(b)d.pdf[c.id]=b64(b)}}
@@ -205,7 +248,7 @@ return`<div class="box"><b>Netto per mese</b>${leg}${svg}</div>${vRiep()}<div cl
 <div class="box"><b>Variazioni tra cedolini ordinari consecutivi</b>${an.length?an.slice(-60).map(x=>`<div class="row">${esc(x)}</div>`).join(''):'<div class="mut">Nessuna variazione oltre il 5%.</div>'}</div>`}
 function vBk(){const alBox=Object.keys(ALIAS).length?`<div class="box"><b>Righe unite</b>${Object.entries(ALIAS).map(([a,b])=>`<div class="row"><span>${esc(a.split('|').slice(1).join(' '))} → ${esc(b.split('|').slice(1).join(' '))}</span><button class="g" data-un="${esc(a)}">Separa</button></div>`).join('')}</div>`:'';const rows=['mese;tipo;sezione;codice;descrizione;nota;importo'];sorted().forEach(c=>c.voci.forEach(v=>rows.push([c.mese,c.tipo,v.sec,v.cod,v.desc,[v.note,NOTES[vk(c,v)+'@'+c.mese]].filter(Boolean).join(' | '),String(v.imp).replace('.',',')].join(';'))));
 return`<div class="box"><b>Esporta CSV</b> <span class="mut">(copia e incolla in Excel)</span><textarea readonly onclick="this.select()">${esc(rows.join('\n'))}</textarea></div>
-${alBox}<div class="box"><b>Sincronizzazione tra dispositivi</b><p class="mut">Salva il file e mettilo in Proton Drive; sull'altro dispositivo importalo da lì. Importare unisce i dati senza creare duplicati: i cedolini con lo stesso ID vengono aggiornati, note e ordine righe si uniscono.</p><label><input type="checkbox" id="wp" checked> Includi i PDF (file più grande)</label><br><br><button class="b" id="sv">Salva file</button> <label class="b">Importa file<input id="if" type="file" accept=".json,application/json" hidden></label></div><div class="box"><b>Rielabora i PDF archiviati</b><p class="mut">Rilegge tutti i PDF salvati con la versione attuale del lettore. Note personali e ordine delle righe restano.</p><button class="b" id="ra">Rielabora tutto</button></div><div class="box"><b>Ricomincia da zero</b><p class="mut">Cancella cedolini, PDF, note e ordine salvati in questo browser.</p><button class="g" id="rs">Cancella tutto</button></div>`}
+${cloudBox()}${alBox}<div class="box"><b>Sincronizzazione tra dispositivi</b><p class="mut">Salva il file e mettilo in Proton Drive; sull'altro dispositivo importalo da lì. Importare unisce i dati senza creare duplicati: i cedolini con lo stesso ID vengono aggiornati, note e ordine righe si uniscono.</p><label><input type="checkbox" id="wp" checked> Includi i PDF (file più grande)</label><br><br><button class="b" id="sv">Salva file</button> <label class="b">Importa file<input id="if" type="file" accept=".json,application/json" hidden></label></div><div class="box"><b>Rielabora i PDF archiviati</b><p class="mut">Rilegge tutti i PDF salvati con la versione attuale del lettore. Note personali e ordine delle righe restano.</p><button class="b" id="ra">Rielabora tutto</button></div><div class="box"><b>Ricomincia da zero</b><p class="mut">Cancella cedolini, PDF, note e ordine salvati in questo browser.</p><button class="g" id="rs">Cancella tutto</button></div>`}
 const TABS={up:['Carica',vUp],arc:['Archivio',vArc],mx:['Matrice',vMx],an:['Analisi',vAn],bk:['Backup',vBk]};
 function draw(){const sx=document.querySelector('.mx'),sp=sx?[sx.scrollLeft,sx.scrollTop]:null;$nav.innerHTML=Object.entries(TABS).map(([k,[l]])=>`<button class="${k===tab?'on':''}" data-t="${k}">${l}</button>`).join('');$m.innerHTML=TABS[tab][1]();const nx=document.querySelector('.mx');if(sp&&nx){nx.scrollLeft=sp[0];nx.scrollTop=sp[1]}
 const fi=document.getElementById('fi'),dz=document.getElementById('dz');
@@ -221,6 +264,9 @@ if(b.id==='nc')tip.hidden=true;
 if(b.id==='ns'){const v=document.getElementById('nt').value.trim();if(v)NOTES[cur]=v;else delete NOTES[cur];tx('pdf','readwrite',s=>s.put(NOTES,'__notes'));tip.hidden=true;draw()}
 if(b.id==='ra')reparse();
 if(b.id==='sv')saveSync();
+if(b.id==='ci'){const v=i=>document.getElementById(i).value;if(v('cf').length<8)return toast('Passphrase di almeno 8 caratteri');b.textContent='Accesso...';try{await cloudLogin(v('cu'),v('ck'),v('ce'),v('cp'),v('cf'));toast('Collegato');await sync()}catch(e){AUTH=KEY=null;toast(e.message)}draw()}
+if(b.id==='cs'){await sync();draw()}
+if(b.id==='co')cloudOut();
 if(b.id==='rs'){if(arm!=='rs'){arm='rs';b.textContent='Clicca ancora per cancellare tutto';b.classList.add('b');setTimeout(()=>{if(arm==='rs'){arm=null;if(b.isConnected){b.textContent='Cancella tutto';b.classList.remove('b')}}},5000);return}arm=null;await tx('ced','readwrite',s=>s.clear());await tx('pdf','readwrite',s=>s.clear());C=[];ORD=[];NOTES={};ALIAS={};log=[];tab='up';toast('Archivio azzerato');draw()}
 if(b.id==='rm'){rmode=!rmode;draw()}
 if(b.dataset.mv)mvBy(b.dataset.mv,+b.dataset.dir);
@@ -241,7 +287,7 @@ document.addEventListener('drop',e=>{const r=e.target.closest('tr[data-k]');if(!
 for(const c of C){c.voci.forEach(norm);const old=c.id;let ch=false;if(TM[c.tipo]){c.tipo=TM[c.tipo];ch=true}
 if(old.startsWith('L86-')){c.id='CUSI-'+c.mese+'-1';const b=await tx('pdf','readonly',s=>s.get(old));if(b)await tx('pdf','readwrite',s=>s.put(b,c.id));await tx('pdf','readwrite',s=>s.delete(old));await tx('ced','readwrite',s=>s.delete(old));ch=true}
 if(ch)await tx('ced','readwrite',s=>s.put(c))}
-ORD=((await tx('pdf','readonly',s=>s.get('__order')))||[]).map(k=>k.replace(/^(Fuori busta|Straordinario)\|/,'Pagamenti vari|').replace(/^Legge 86\/01\|/,'CUSI|'));NOTES=(await tx('pdf','readonly',s=>s.get('__notes')))||{};ALIAS=(await tx('pdf','readonly',s=>s.get('__alias')))||{};const nk=k=>{const [a,b]=k.split('@'),p=a.split('|');return(p.length===3?p.slice(0,2).join('|'):a)+(b!==undefined?'@'+b:'')};ORD=[...new Set(ORD.map(nk))];const N0=NOTES;NOTES={};for(const k in N0)NOTES[nk(k)]=N0[k];draw()})();
+ORD=((await tx('pdf','readonly',s=>s.get('__order')))||[]).map(k=>k.replace(/^(Fuori busta|Straordinario)\|/,'Pagamenti vari|').replace(/^Legge 86\/01\|/,'CUSI|'));NOTES=(await tx('pdf','readonly',s=>s.get('__notes')))||{};ALIAS=(await tx('pdf','readonly',s=>s.get('__alias')))||{};const nk=k=>{const [a,b]=k.split('@'),p=a.split('|');return(p.length===3?p.slice(0,2).join('|'):a)+(b!==undefined?'@'+b:'')};ORD=[...new Set(ORD.map(nk))];const N0=NOTES;NOTES={};for(const k in N0)NOTES[nk(k)]=N0[k];draw();cloudInit()})();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
 </script></body></html>
